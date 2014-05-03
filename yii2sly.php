@@ -100,12 +100,13 @@ class yii2sly extends Widget
     {
         $id = $this->options['id'];
         //get the displayed view and register the needed assets
-        slyAsset::register($this->getView());
+        $view = $this->getView();
+        slyAsset::register($view);
 
         $js = array();
         $className = $this->options['class'];
         $options = empty($this->clientOptions) ? '' : Json::encode($this->clientOptions);
-        $js[] = "var sly$id = new Sly($className,$options).init();";
+        $js[] = "var sly$id = new Sly('#$id',$options).init();";
         
         $view->registerJs(implode("\n", $js),View::POS_READY);
     }

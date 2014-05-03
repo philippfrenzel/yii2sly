@@ -120,7 +120,7 @@ class yii2imageslider extends Widget
         for ($i = 0, $count = count($this->items); $i < $count; $i++) {
             $items[] = $this->renderItem($this->items[$i], $i);
         }
-        return Html::tag('div', implode("\n", $items), array('class' => 'als-wrapper'));
+        return Html::tag('div', implode("\n", $items));
     }
 
     /**
@@ -139,7 +139,6 @@ class yii2imageslider extends Widget
         } else {
             throw new InvalidConfigException('The "content" option is required.');
         }
-
         return Html::tag('div', $content, ['class'=>'slidee']);
     }
 
@@ -149,16 +148,16 @@ class yii2imageslider extends Widget
      */
     public function renderControls($position='begin')
     {
-        if ($position === 'begin') {
-            //<span class="als-prev"><img src="images/thin_left_arrow_333.png" alt="prev" title="previous" /></span>
+        if ($position === 'begin') 
+        {
             $scroller = Html::tag('div',' ',array(
-                        'class' => 'handle',
-                        'title' => 'prev',
-                    ));
+                'class' => 'handle'
+            ));
             return  "<div class='scrollbar'>".$scroller."</div>\n";
-        } else {
+        } 
+        /*else {
             //<span class="als-next"><img src="images/thin_right_arrow_333.png" alt="next" title="next" /></span>
-            /*$icon = Html::Tag('i',' ',array(
+            $icon = Html::Tag('i',' ',array(
                         'class' => 'fa fa-arrow-right fa-3',
                         'title' => 'next',
                     ));

@@ -78,6 +78,6 @@
 .controls { margin: 10px 0; text-align: center; }
 
 /* One Item Per Frame example*/
-.oneperframe { height: 300px; line-height: 300px; }
+.oneperframe { height: 400px; line-height: 390px; }
 .oneperframe ul li { width: 1140px; }
-.oneperframe ul li.active { background: #333; }
+.oneperframe ul li.active { background: #000; }

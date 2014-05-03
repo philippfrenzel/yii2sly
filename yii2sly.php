@@ -64,7 +64,6 @@ class yii2sly extends Widget
     * direction
     */
     public $clientOptions = array(
-        'scrollBar' => 'scrollbar',
     );
 
     /**

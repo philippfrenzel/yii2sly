@@ -22,7 +22,7 @@ use yii\helpers\ArrayHelper;
 
 use yii\base\Widget as Widget;
 
-class yii2imageslider extends Widget
+class yii2sly extends Widget
 {
 
     /**

@@ -8,7 +8,7 @@ namespace philippfrenzel\yii2sly;
 
 use yii\web\AssetBundle;
 
-class yii2imagesliderAsset extends AssetBundle
+class slyAsset extends AssetBundle
 {
     public $sourcePath = '@philippfrenzel/yii2sly/assets';
     public $css = [];

@@ -161,8 +161,8 @@ class yii2sly extends Widget
                         'class' => 'fa fa-arrow-right fa-3',
                         'title' => 'next',
                     ));
-            return  "<span class='als-next'>".$icon."</span>\n";*/
-        }
+            return  "<span class='als-next'>".$icon."</span>\n";
+        }*/
     }
 
 }

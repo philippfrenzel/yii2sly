@@ -75,7 +75,7 @@
 }
 
 /* Controls */
-.controls { margin: 25px 0; text-align: center; }
+.controls { margin: 10px 0; text-align: center; }
 
 /* One Item Per Frame example*/
 .oneperframe { height: 300px; line-height: 300px; }

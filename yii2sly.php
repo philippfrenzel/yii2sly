@@ -197,8 +197,8 @@ class yii2sly extends Widget
         } 
         else {
             $nav = "";
-            $nav .= Html::tag('button','prev',['id'=>$this->options['id'].'btn_prev','class'=>'btn']);
-            $nav .= Html::tag('button','next',['id'=>$this->options['id'].'btn_next','class'=>'btn btn-info']);
+            $nav .= Html::tag('button','prev',['id'=>$this->options['id'].'btn_prev','class'=>'btn btn-inverse pull-left']);
+            $nav .= Html::tag('button','next',['id'=>$this->options['id'].'btn_next','class'=>'btn btn-inverse pull-right']);
             return "<div id='".$this->options['id']."controlls' class='controls'>".$nav."</div>\n";
         }
     }

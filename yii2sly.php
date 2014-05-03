@@ -64,6 +64,7 @@ class yii2sly extends Widget
     * direction
     */
     public $clientOptions = array(
+        'scrollBar' => 'scrollbar',
     );
 
     /**
@@ -76,6 +77,9 @@ class yii2sly extends Widget
         //checks for the element id
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
+        }
+        if (!isset($this->clientOptions['scrollBar'])) {
+            $this->clientOptions['scrollBar'] = $this->getId().'scrollbar';
         }
     }
 
@@ -153,8 +157,9 @@ class yii2sly extends Widget
         {
             $scroller = Html::tag('div',' ',array(
                 'class' => 'handle'
+                'id' => $this->options['id'].'scrollbar'
             ));
-            return  "<div class='scrollbar'>".$scroller."</div>\n";
+            return "<div class='scrollbar'>".$scroller."</div>\n";
         } 
         /*else {
             //<span class="als-next"><img src="images/thin_right_arrow_333.png" alt="next" title="next" /></span>

@@ -11,7 +11,9 @@ use yii\web\AssetBundle;
 class slyAsset extends AssetBundle
 {
     public $sourcePath = '@philippfrenzel/yii2sly/assets';
-    public $css = [];
+    public $css = [
+        'css/sly.css'
+    ];
     public $js = array(
         'js/sly.min.js'
     );

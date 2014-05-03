@@ -48,7 +48,7 @@ class yii2sly extends Widget
     * If a value is null, the corresponding attribute will not be rendered.
     */
     public $options = array(
-        'class' => 'frame',
+        'class' => 'frame oneperframe',
     );
 
 
@@ -64,7 +64,55 @@ class yii2sly extends Widget
     * direction
     */
     public $clientOptions = array(
+        'horizontal' => 1,
+        'smart' => 1,
+        'scrollBy' => 1,
+        'itemNav' => 'forceCentered',
+        'activateMiddle'=> '1',
+        'mouseDragging'=> '1',
+        'touchDragging'=> '1',
+        'releaseSwing'=> '1',
+        'startAt'=> '0',
+        'speed'=> '300',
+        'elasticBounds'=> '1',
+        'easing' => 'easeOutExpo',
+        'dragHandle' => 1,
+        'clickBar' => 1
     );
+
+    /*
+    // -------------------------------------------------------------
+    //   One Item Per Frame
+    // -------------------------------------------------------------
+    (function () {
+        var $frame = $('#oneperframe');
+        var $wrap  = $frame.parent();
+
+        // Call Sly on frame
+        $frame.sly({
+            -horizontal: 1,
+            -itemNav: 'forceCentered',
+            -smart: 1,
+            -activateMiddle: 1,
+            -mouseDragging: 1,
+            -touchDragging: 1,
+            -releaseSwing: 1,
+            -startAt: 0,
+            -scrollBar: $wrap.find('.scrollbar'),
+            -scrollBy: 1,
+            -speed: 300,
+            -elasticBounds: 1,
+            -easing: 'easeOutExpo',
+            -dragHandle: 1,
+            -dynamicHandle: 1,
+            -clickBar: 1,
+
+            // Buttons
+            prev: $wrap.find('.prev'),
+            next: $wrap.find('.next')
+        });
+    }());
+     */
 
     /**
      * Initializes the widget.
@@ -78,7 +126,22 @@ class yii2sly extends Widget
             $this->options['id'] = $this->getId();
         }
         if (!isset($this->clientOptions['scrollBar'])) {
-            $this->clientOptions['scrollBar'] = $this->getId().'scrollbar';
+            $this->clientOptions['scrollBar'] = '#'.$this->getId().'scrollbar';
+        }
+        /*if (!isset($this->clientOptions['pagesBar'])) {
+            $this->clientOptions['pagesBar'] = '#'.$this->getId().'controlls';
+        }*/
+        if (!isset($this->clientOptions['scrollSource'])) {
+            $this->clientOptions['scrollSource'] = '#'.$this->getId();
+        }
+        //navigation bar
+        if (!isset($this->clientOptions['next']))
+        {            
+            $this->clientOptions['next'] = '#'.$this->options['id'].'btn_next';
+        }
+        if (!isset($this->clientOptions['prev']))
+        {            
+            $this->clientOptions['prev'] = '#'.$this->options['id'].'btn_prev';
         }
     }
 
@@ -87,11 +150,11 @@ class yii2sly extends Widget
      */
     public function run()
     {
-        echo Html::beginTag('div', $this->options) . "\n";
-            echo $this->renderControls('begin') . "\n";
+        echo $this->renderControls('begin') . "\n";
+        echo Html::beginTag('div', $this->options) . "\n";            
             echo $this->renderItems() . "\n";        
-            //echo $this->renderControls('end') . "\n";
         echo Html::endTag('div') . "\n";
+        echo $this->renderControls('end') . "\n";
         $this->registerPlugin();
     }
 
@@ -124,7 +187,7 @@ class yii2sly extends Widget
         for ($i = 0, $count = count($this->items); $i < $count; $i++) {
             $items[] = $this->renderItem($this->items[$i], $i);
         }
-        return Html::tag('div', implode("\n", $items));
+        return Html::tag('ul',implode("\n", $items), ['class'=>'slidee']);
     }
 
     /**
@@ -143,7 +206,14 @@ class yii2sly extends Widget
         } else {
             throw new InvalidConfigException('The "content" option is required.');
         }
-        return Html::tag('div', $content, ['class'=>'slidee']);
+
+        if($index==0){
+            return Html::tag('li', $content,['class'=>'active']);
+        }
+        else
+        {
+            return Html::tag('li', $content);
+        }        
     }
 
     /**
@@ -156,18 +226,15 @@ class yii2sly extends Widget
         {
             $scroller = Html::tag('div',' ',array(
                 'class' => 'handle'
-                'id' => $this->options['id'].'scrollbar'
             ));
-            return "<div class='scrollbar'>".$scroller."</div>\n";
+            return "<div id='".$this->options['id']."scrollbar' class='scrollbar'>".$scroller."</div>\n";
         } 
-        /*else {
-            //<span class="als-next"><img src="images/thin_right_arrow_333.png" alt="next" title="next" /></span>
-            $icon = Html::Tag('i',' ',array(
-                        'class' => 'fa fa-arrow-right fa-3',
-                        'title' => 'next',
-                    ));
-            return  "<span class='als-next'>".$icon."</span>\n";
-        }*/
+        else {
+            $nav = "";
+            $nav .= Html::tag('button','prev',['id'=>$this->options['id'].'btn_prev','class'=>'btn']);
+            $nav .= Html::tag('button','next',['id'=>$this->options['id'].'btn_next','class'=>'btn btn-info']);
+            return "<div id='".$this->options['id']."controlls' class='controls'>".$nav."</div>\n";
+        }
     }
 
 }

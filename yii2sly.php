@@ -14,9 +14,6 @@ use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
 
-use yii
-
-
 class yii2sly extends \yii\base\Widget
 {
     /**

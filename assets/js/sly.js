@@ -1,5 +1,5 @@
 /*!
- * sly 1.2.3 - 9th Feb 2014
+ * sly 1.2.5 - 28th Aug 2014
  * https://github.com/darsain/sly
  *
  * Licensed under the MIT license.
@@ -24,11 +24,26 @@
 	var dragInitEvents = 'touchstart.' + namespace + ' mousedown.' + namespace;
 	var dragMouseEvents = 'mousemove.' + namespace + ' mouseup.' + namespace;
 	var dragTouchEvents = 'touchmove.' + namespace + ' touchend.' + namespace;
+	var wheelEvent = (document.implementation.hasFeature('Event.wheel', '3.0') ? 'wheel.' : 'mousewheel.') + namespace;
 	var clickEvent = 'click.' + namespace;
 	var mouseDownEvent = 'mousedown.' + namespace;
 	var interactiveElements = ['INPUT', 'SELECT', 'BUTTON', 'TEXTAREA'];
 	var tmpArray = [];
 	var time;
+
+	// Math shorthands
+	var abs = Math.abs;
+	var sqrt = Math.sqrt;
+	var pow = Math.pow;
+	var round = Math.round;
+	var max = Math.max;
+	var min = Math.min;
+
+	// Keep track of last fired global wheel event
+	var lastWheel = 0;
+	$doc.on(wheelEvent, function () {
+		lastWheel = +new Date();
+	});
 
 	/**
 	 * Sly.
@@ -160,7 +175,7 @@
 
 			// Set position limits & relatives
 			pos.start = 0;
-			pos.end = Math.max(slideeSize - frameSize, 0);
+			pos.end = max(slideeSize - frameSize, 0);
 
 			// Sizes & offsets for item based navigations
 			if (itemNav) {
@@ -197,7 +212,7 @@
 					item.size = singleSpaced ? itemSize : itemSizeFull;
 					item.half = item.size / 2;
 					item.start = slideeSize + (singleSpaced ? itemMarginStart : 0);
-					item.center = item.start - Math.round(frameSize / 2 - item.size / 2);
+					item.center = item.start - round(frameSize / 2 - item.size / 2);
 					item.end = item.start - frameSize + item.size;
 
 					// Account for slidee padding
@@ -213,7 +228,7 @@
 					if (!o.horizontal && !areFloated) {
 						// Subtract smaller margin, but only when top margin is not 0, and this is not the first element
 						if (itemMarginEnd && itemMarginStart && i > 0) {
-							slideeSize -= Math.min(itemMarginStart, itemMarginEnd);
+							slideeSize -= min(itemMarginStart, itemMarginEnd);
 						}
 					}
 
@@ -245,7 +260,7 @@
 			}
 
 			// Calculate SLIDEE center position
-			pos.center = Math.round(pos.end / 2 + pos.start / 2);
+			pos.center = round(pos.end / 2 + pos.start / 2);
 
 			// Update relative positions
 			updateRelatives();
@@ -254,7 +269,7 @@
 			if ($handle.length && sbSize > 0) {
 				// Stretch scrollbar handle to represent the visible area
 				if (o.dynamicHandle) {
-					handleSize = pos.start === pos.end ? sbSize : Math.round(sbSize * frameSize / slideeSize);
+					handleSize = pos.start === pos.end ? sbSize : round(sbSize * frameSize / slideeSize);
 					handleSize = within(handleSize, o.minHandleSize, sbSize);
 					$handle[0].style[o.horizontal ? 'width' : 'height'] = handleSize + 'px';
 				} else {
@@ -321,7 +336,8 @@
 					activate(rel.activeItem >= items.length ? items.length - 1 : 0, !lastItemsCount);
 				}
 				// Fix possible overflowing
-				slideTo(centeredNav && items.length ? items[rel.activeItem].center : within(pos.dest, pos.start, pos.end));
+				var activeItem = items[rel.activeItem];
+				slideTo(centeredNav && activeItem ? activeItem.center : within(pos.dest, pos.start, pos.end));
 			} else {
 				if (!self.initialized) {
 					slideTo(o.startAt, 1);
@@ -427,7 +443,7 @@
 			else if (animation.tweesing) {
 				animation.tweeseDelta = animation.to - pos.cur;
 				// Fuck Zeno's paradox
-				if (Math.abs(animation.tweeseDelta) < 0.1) {
+				if (abs(animation.tweeseDelta) < 0.1) {
 					pos.cur = animation.to;
 				} else {
 					pos.cur += animation.tweeseDelta * (dragging.released ? o.swingSpeed : o.syncSpeed);
@@ -435,7 +451,7 @@
 			}
 			// Use tweening for basic animations with known end point
 			else {
-				animation.time = Math.min(+new Date() - animation.start, o.speed);
+				animation.time = min(+new Date() - animation.start, o.speed);
 				pos.cur = animation.from + animation.delta * jQuery.easing[o.easing](animation.time/o.speed, animation.time, 0, 1, o.speed);
 			}
 
@@ -454,7 +470,7 @@
 				if (transform) {
 					$slidee[0].style[transform] = gpuAcceleration + (o.horizontal ? 'translateX' : 'translateY') + '(' + (-pos.cur) + 'px)';
 				} else {
-					$slidee[0].style[o.horizontal ? 'left' : 'top'] = -Math.round(pos.cur) + 'px';
+					$slidee[0].style[o.horizontal ? 'left' : 'top'] = -round(pos.cur) + 'px';
 				}
 			}
 
@@ -474,7 +490,7 @@
 		function syncScrollbar() {
 			if ($handle.length) {
 				hPos.cur = pos.start === pos.end ? 0 : (((dragging.init && !dragging.slidee) ? pos.dest : pos.cur) - pos.start) / (pos.end - pos.start) * hPos.end;
-				hPos.cur = within(Math.round(hPos.cur), hPos.start, hPos.end);
+				hPos.cur = within(round(hPos.cur), hPos.start, hPos.end);
 				if (last.hPos !== hPos.cur) {
 					last.hPos = hPos.cur;
 					if (transform) {
@@ -571,7 +587,7 @@
 			move.now = +new Date();
 			move.pos = pos.cur + (move.now - move.lastTime) / 1000 * move.speed;
 			// Slide
-			slideTo(dragging.init ? move.pos : Math.round(move.pos));
+			slideTo(dragging.init ? move.pos : round(move.pos));
 			// Normally, this is triggered in render(), but if there
 			// is nothing to render, we have to do it manually here.
 			if (!dragging.init && pos.cur === pos.dest) {
@@ -1062,7 +1078,7 @@
 
 			if (itemNav) {
 				// Insert the element(s)
-				if (index == null || !items[0]) {
+				if (index == null || !items[0] || index >= items.length) {
 					$element.appendTo($slidee);
 				} else if (items.length) {
 					$element.insertBefore(items[index].el);
@@ -1290,7 +1306,7 @@
 		 * @return {Int}
 		 */
 		function handleToSlidee(handlePos) {
-			return Math.round(within(handlePos, hPos.start, hPos.end) / hPos.end * (pos.end - pos.start)) + pos.start;
+			return round(within(handlePos, hPos.start, hPos.end) / hPos.end * (pos.end - pos.start)) + pos.start;
 		}
 
 		/**
@@ -1327,14 +1343,14 @@
 		 * @return {Void}
 		 */
 		function dragInit(event) {
-			// Ignore when already in progress, or interactive element
-			if (dragging.init || isInteractive(event.target)) {
-				return;
-			}
-
 			var isTouch = event.type === 'touchstart';
 			var source = event.data.source;
 			var isSlidee = source === 'slidee';
+
+			// Ignore when already in progress, or interactive element in non-touch navivagion
+			if (dragging.init || !isTouch && isInteractive(event.target)) {
+				return;
+			}
 
 			// Handle dragging conditions
 			if (source === 'handle' && (!o.dragHandle || hPos.start === hPos.end)) {
@@ -1354,7 +1370,7 @@
 			continuousInit(source);
 
 			// Properties used in dragHandler
-			dragging.init = 1;
+			dragging.init = 0;
 			dragging.$source = $(event.target);
 			dragging.touch = isTouch;
 			dragging.pointer = isTouch ? event.originalEvent.touches[0] : event;
@@ -1368,9 +1384,6 @@
 			dragging.locked = 0;
 			dragging.history = [0, 0, 0, 0];
 			dragging.pathToLock = isSlidee ? isTouch ? 30 : 10 : 0;
-			dragging.initLoc = dragging[o.horizontal ? 'initX' : 'initY'];
-			dragging.deltaMin = isSlidee ? -dragging.initLoc : -hPos.cur;
-			dragging.deltaMax = isSlidee ? document[o.horizontal ? 'width' : 'height'] - dragging.initLoc : hPos.end - hPos.cur;
 
 			// Bind dragging events
 			$doc.on(isTouch ? dragTouchEvents : dragMouseEvents, dragHandler);
@@ -1403,39 +1416,38 @@
 			dragging.pointer = dragging.touch ? event.originalEvent[dragging.released ? 'changedTouches' : 'touches'][0] : event;
 			dragging.pathX = dragging.pointer.pageX - dragging.initX;
 			dragging.pathY = dragging.pointer.pageY - dragging.initY;
-			dragging.path = Math.sqrt(Math.pow(dragging.pathX, 2) + Math.pow(dragging.pathY, 2));
-			dragging.delta = within(o.horizontal ? dragging.pathX : dragging.pathY, dragging.deltaMin, dragging.deltaMax);
+			dragging.path = sqrt(pow(dragging.pathX, 2) + pow(dragging.pathY, 2));
+			dragging.delta = o.horizontal ? dragging.pathX : dragging.pathY;
 
-			if (!dragging.locked && dragging.path > dragging.pathToLock) {
-				dragging.locked = 1;
-				if (o.horizontal ? Math.abs(dragging.pathX) < Math.abs(dragging.pathY) : Math.abs(dragging.pathX) > Math.abs(dragging.pathY)) {
-					// If path has reached the pathToLock distance, but in a wrong direction, cancel dragging
-					dragging.released = 1;
-				} else if (dragging.slidee) {
-					// Disable click on a source element, as it is unwelcome when dragging SLIDEE
-					dragging.$source.on(clickEvent, disableOneEvent);
+			if (!dragging.init) {
+				if (o.horizontal ? abs(dragging.pathX) > abs(dragging.pathY) : abs(dragging.pathX) < abs(dragging.pathY)) {
+					dragging.init = 1;
+				} else {
+					return dragEnd();
 				}
+			}
+
+			stopDefault(event);
+
+			// Disable click on a source element, as it is unwelcome when dragging
+			if (!dragging.locked && dragging.path > dragging.pathToLock && dragging.slidee) {
+				dragging.locked = 1;
+				dragging.$source.on(clickEvent, disableOneEvent);
 			}
 
 			// Cancel dragging on release
 			if (dragging.released) {
-				if (!dragging.touch) {
-					stopDefault(event);
-				}
-
 				dragEnd();
 
 				// Adjust path with a swing on mouse release
 				if (o.releaseSwing && dragging.slidee) {
 					dragging.swing = (dragging.delta - dragging.history[0]) / 40 * 300;
 					dragging.delta += dragging.swing;
-					dragging.tweese = Math.abs(dragging.swing) > 10;
+					dragging.tweese = abs(dragging.swing) > 10;
 				}
-			} else if (dragging.locked || !dragging.touch) {
-				stopDefault(event);
 			}
 
-			slideTo(dragging.slidee ? Math.round(dragging.initPos - dragging.delta) : handleToSlidee(dragging.initPos + dragging.delta));
+			slideTo(dragging.slidee ? round(dragging.initPos - dragging.delta) : handleToSlidee(dragging.initPos + dragging.delta));
 		}
 
 		/**
@@ -1527,8 +1539,9 @@
 		 * @return {Int}
 		 */
 		function normalizeWheelDelta(event) {
-			// event.deltaY needed only for compatibility with jQuery mousewheel plugin in FF & IE
-			scrolling.curDelta = event.wheelDelta ? -event.wheelDelta / 120 : (event.detail || event.deltaY) / 3;
+			// wheelDelta needed only for IE8-
+			scrolling.curDelta = ((o.horizontal ? event.deltaY || event.deltaX : event.deltaY) || -event.wheelDelta);
+			scrolling.curDelta /= event.deltaMode === 1 ? 3 : 100;
 			if (!itemNav) {
 				return scrolling.curDelta;
 			}
@@ -1538,10 +1551,10 @@
 			}
 			scrolling.last = time;
 			scrolling.delta += scrolling.curDelta;
-			if (Math.abs(scrolling.delta) < 1) {
+			if (abs(scrolling.delta) < 1) {
 				scrolling.finalDelta = 0;
 			} else {
-				scrolling.finalDelta = Math.round(scrolling.delta / 1);
+				scrolling.finalDelta = round(scrolling.delta / 1);
 				scrolling.delta %= 1;
 			}
 			return scrolling.finalDelta;
@@ -1555,6 +1568,12 @@
 		 * @return {Void}
 		 */
 		function scrollHandler(event) {
+			// Don't hijack global scrolling
+			var time = +new Date();
+			if (lastWheel + 300 > time) {
+				lastWheel = time;
+				return;
+			}
 			// Ignore if there is no scrolling to be done
 			if (!o.scrollBy || pos.start === pos.end) {
 				return;
@@ -1784,7 +1803,7 @@
 			}
 
 			// Scrolling navigation
-			$scrollSource.on('DOMMouseScroll.' + namespace + ' mousewheel.' + namespace, scrollHandler);
+			$scrollSource.on(wheelEvent, scrollHandler);
 
 			// Clicking on scrollbar navigation
 			if ($sb[0]) {
@@ -1913,7 +1932,7 @@
 	 * @return {Int}
 	 */
 	function getPx($item, property) {
-		return 0 | Math.round(String($item.css(property)).replace(/[^\-0-9.]/g, ''));
+		return 0 | round(String($item.css(property)).replace(/[^\-0-9.]/g, ''));
 	}
 
 	/**
@@ -1944,7 +1963,7 @@
 		if (!cAF) {
 			rAF = function (callback) {
 				var currTime = +new Date();
-				var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+				var timeToCall = max(0, 16 - (currTime - lastTime));
 				lastTime = currTime + timeToCall;
 				return w.setTimeout(function () { callback(currTime + timeToCall); }, timeToCall);
 			};
@@ -2021,6 +2040,7 @@
 		// Scrolling
 		scrollSource: null, // Element for catching the mouse wheel scrolling. Default is FRAME.
 		scrollBy:     0,    // Pixels or items to move per one mouse scroll. 0 to disable scrolling.
+		scrollHijack: 300,  // Milliseconds since last wheel event after which it is acceptable to hijack global scroll.
 
 		// Dragging
 		dragSource:    null, // Selector or DOM element for catching dragging events. Default is FRAME.

@@ -4,6 +4,7 @@
   line-height: 250px;
   overflow: hidden;
 }
+
 .frame ul {
   list-style: none;
   margin: 0;
@@ -11,6 +12,7 @@
   height: 100%;
   font-size: 50px;
 }
+
 .frame ul li {
   float: left;
   width: 227px;
@@ -22,6 +24,7 @@
   text-align: center;
   cursor: pointer;
 }
+
 .frame ul li.active {
   color: #fff;
   background: #a03232;
@@ -34,12 +37,14 @@
   background: #ccc;
   line-height: 0;
 }
+
 .scrollbar .handle {
   width: 100px;
   height: 100%;
   background: #292a33;
   cursor: pointer;
 }
+
 .scrollbar .handle .mousearea {
   position: absolute;
   top: -9px;
@@ -55,6 +60,7 @@
   padding: 0;
   text-align: center;
 }
+
 .pages li {
   display: inline-block;
   width: 14px;
@@ -67,9 +73,11 @@
   background: #fff;
   box-shadow: inset 0 0 0 1px rgba(0,0,0,.2);
 }
+
 .pages li:hover {
   background: #aaa;
 }
+
 .pages li.active {
   background: #666;
 }

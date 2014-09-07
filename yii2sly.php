@@ -1,7 +1,7 @@
 <?php
 
  /**
- * This class is merely used to publish a TOC based upon the headings within a defined container
+ * yii2 extension for the amazing jQuery Plugin: http://darsa.in/sly/
  * @copyright Frenzel GmbH - www.frenzel.net
  * @link http://www.frenzel.net
  * @author Philipp Frenzel <philipp@frenzel.net>
@@ -30,14 +30,10 @@ class yii2sly extends Widget
      * slide with the following structure:
      *
      * ```php
-     * array(
+     * [
      *     // required, slide content (HTML), such as an image tag
      *     'content' => '<img src="http://twitter.github.io/bootstrap/assets/img/bootstrap-mdo-sfmoma-01.jpg"/>',
-     *     // optional, the caption (HTML) of the slide
-     *     'caption' => '<h4>This is title</h4><p>This is the caption text</p>',
-     *     // optional the HTML attributes of the slide container
-     *     'options' => array(),
-     * )
+     * ]
      * ```
      */
     public $items = array();
@@ -48,8 +44,14 @@ class yii2sly extends Widget
     * If a value is null, the corresponding attribute will not be rendered.
     */
     public $options = array(
-        'class' => 'frame oneperframe',
+        'class' => 'frame',
     );
+
+    /**
+     * one per frame item or all items in a row
+     * @var boolean
+     */
+    public $onePerFrame = NULL;
 
 
     /**
@@ -87,27 +89,38 @@ class yii2sly extends Widget
     public function init()
     {
         parent::init();
+        
         //checks for the element id
         if (!isset($this->options['id'])) {
             $this->options['id'] = $this->getId();
         }
+        
         if (!isset($this->clientOptions['scrollBar'])) {
             $this->clientOptions['scrollBar'] = '#'.$this->getId().'scrollbar';
         }
+        
         /*if (!isset($this->clientOptions['pagesBar'])) {
             $this->clientOptions['pagesBar'] = '#'.$this->getId().'controlls';
         }*/
+        
         if (!isset($this->clientOptions['scrollSource'])) {
             $this->clientOptions['scrollSource'] = '#'.$this->getId();
         }
+        
         //navigation bar
         if (!isset($this->clientOptions['next']))
         {            
             $this->clientOptions['next'] = '#'.$this->options['id'].'btn_next';
         }
+        
         if (!isset($this->clientOptions['prev']))
         {            
             $this->clientOptions['prev'] = '#'.$this->options['id'].'btn_prev';
+        }
+
+        if(!is_null($this->onePerFrame))
+        {
+            Html::addCssClass($this->options,'oneperframe');
         }
     }
 

@@ -1,7 +1,7 @@
 {
 	"name": "philippfrenzel/yii2sly",
-	"description": "Any List Scroller for Yii2",
-	"keywords": ["yii2", "framework","yii2 jquery sly"],
+	"description": "JavaScript library for one-directional scrolling with item based navigation support for Yii2",
+	"keywords": ["yii2", "framework","sly","jquery"],
 	"homepage": "http://www.frenzel.net/",
 	"type": "yii2-extension",
 	"license": "MIT License",
@@ -22,7 +22,7 @@
 	},
 	"autoload": {
 		"psr-4": {
-      "philippfrenzel\\yii2sly\\": ""
-    }
+	    	"philippfrenzel\\yii2sly\\": ""
+	    }
 	}
 }

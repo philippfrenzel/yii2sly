@@ -1,85 +1,73 @@
-/* Frame */
-.frame {
-  height: 250px;
-  line-height: 250px;
-  overflow: hidden;
+/* 
+   Setup in cleaner logic
+   Horizontal items:
+*/
+.framehorizontal { 
+  width: 100%; 
+  height: 160px; 
+  padding: 0; 
 }
 
-.frame ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-size: 50px;
+.framehorizontal .slideehorizontal { 
+  margin: 0; 
+  padding: 0; 
+  height: 100%; 
+  list-style: none; 
 }
 
-.frame ul li {
-  float: left;
-  width: 227px;
-  height: 100%;
-  margin: 0 1px 0 0;
-  padding: 0;
-  background: #333;
-  color: #ddd;
-  text-align: center;
-  cursor: pointer;
+.framehorizontal .slideehorizontal li { 
+  float: left; 
+  margin: 0 5px 0 0; 
+  padding: 0; 
+  width: 120px; 
+  height: 100%; 
 }
 
-.frame ul li.active {
-  color: #fff;
-  background: #a03232;
+.scrollbarhorizontal { 
+  width: 100%; 
+  height: 10px; 
 }
 
-/* Scrollbar */
-.scrollbar {
-  margin: 0 0 1em 0;
-  height: 2px;
-  background: #ccc;
-  line-height: 0;
+.scrollbarhorizontal .handle {
+    width: 100px; /* overriden if dynamicHandle: 1 */
+    height: 100%;
+    background: #222;
 }
 
-.scrollbar .handle {
-  width: 100px;
-  height: 100%;
-  background: #292a33;
-  cursor: pointer;
+/* 
+   Setup in cleaner logic
+   Vertical items:
+*/
+.framevertical { 
+  padding: 0; 
+  width: 300px; 
+  height: 400px; 
 }
 
-.scrollbar .handle .mousearea {
-  position: absolute;
-  top: -9px;
-  left: 0;
-  width: 100%;
-  height: 20px;
+.framevertical .slideevertical { 
+  margin: 0; 
+  padding: 0; 
+  width: 100%; 
+  list-style: none; 
 }
 
-/* Pages */
-.pages {
-  list-style: none;
-  margin: 20px 0;
-  padding: 0;
-  text-align: center;
+.framevertical .slideevertical li { 
+  float: left; 
+  margin: 0 0 5px 0; 
+  padding: 0; 
+  width: 100%; 
+  height: 100px; 
 }
 
-.pages li {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  margin: 0 4px;
-  text-indent: -999px;
-  border-radius: 10px;
-  cursor: pointer;
-  overflow: hidden;
-  background: #fff;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,.2);
+.scrollbarvertical { 
+  width: 10px; 
+  height: 400px; 
 }
 
-.pages li:hover {
-  background: #aaa;
-}
-
-.pages li.active {
-  background: #666;
+.scrollbarvertical .handle {
+    width: 100%;
+    height: 100px; /* overriden if dynamicHandle: 1 */
+    background: #222;
 }
 
 /* Controls */

@@ -2,29 +2,23 @@
 
  /**
  * yii2 extension for the amazing jQuery Plugin: http://darsa.in/sly/
+ * @version 0.9 (beta)
  * @copyright Frenzel GmbH - www.frenzel.net
  * @link http://www.frenzel.net
  * @author Philipp Frenzel <philipp@frenzel.net>
- *
  */
 
 namespace philippfrenzel\yii2sly;
-
-use Yii;
-
-use yii\base\Model;
-use yii\web\View;
-use yii\base\InvalidConfigException;
 
 use yii\helpers\Html;
 use yii\helpers\Json;
 use yii\helpers\ArrayHelper;
 
-use yii\base\Widget as Widget;
+use yii
 
-class yii2sly extends Widget
+
+class yii2sly extends \yii\base\Widget
 {
-
     /**
      * @var array list of slides in the imageslider. Each array element represents a single
      * slide with the following structure:
@@ -36,16 +30,14 @@ class yii2sly extends Widget
      * ]
      * ```
      */
-    public $items = array();
+    public $items = [];
 
     /**
     * @var array the HTML attributes (name-value pairs) for the field container tag.
     * The values will be HTML-encoded using [[Html::encode()]].
     * If a value is null, the corresponding attribute will not be rendered.
     */
-    public $options = array(
-        'class' => 'frame',
-    );
+    public $options = [];
 
     /**
      * one per frame item or all items in a row
@@ -53,18 +45,23 @@ class yii2sly extends Widget
      */
     public $onePerFrame = NULL;
 
+    /**
+     * set the orientation for the slides
+     * @var string horizontal|vertical
+     */
+    public $orientation = 'horizontal';
 
     /**
-    * can contain all configuration options
-    * @var array all attributes that be accepted by the plugin, check docs!
-    * visible_items
-    * scrolling_items
-    * orientation
-    * circular
-    * autoscroll
-    * interval
-    * direction
-    */
+     * can contain all configuration options
+     * @var array all attributes that be accepted by the plugin, check docs!
+     * @param visible_items
+     * @param scrolling_items
+     * @param orientation
+     * @param circular
+     * @param autoscroll
+     * @param interval
+     * @param direction
+     */
     public $clientOptions = array(
         'horizontal' => 1,
         'smart' => 1,
@@ -116,12 +113,14 @@ class yii2sly extends Widget
         if (!isset($this->clientOptions['prev']))
         {            
             $this->clientOptions['prev'] = '#'.$this->options['id'].'btn_prev';
-        }
+        } 
 
+        //add the requierd css classes to the div container element
+        Html::addCssClass($this->options,'frame'.$this->orientation);
         if(!is_null($this->onePerFrame))
         {
             Html::addCssClass($this->options,'oneperframe');
-        }
+        }        
     }
 
     /**
@@ -144,16 +143,17 @@ class yii2sly extends Widget
     protected function registerPlugin()
     {
         $id = $this->options['id'];
+        
         //get the displayed view and register the needed assets
         $view = $this->getView();
         slyAsset::register($view);
 
-        $js = array();
-        $className = $this->options['class'];
+        $js = [];
+        
         $options = empty($this->clientOptions) ? '' : Json::encode($this->clientOptions);
         $js[] = "var sly$id = new Sly('#$id',$options).init();";
         
-        $view->registerJs(implode("\n", $js),View::POS_READY);
+        $view->registerJs(implode("\n", $js),\yii\web\View::POS_READY);
     }
 
     /**
@@ -166,7 +166,7 @@ class yii2sly extends Widget
         for ($i = 0, $count = count($this->items); $i < $count; $i++) {
             $items[] = $this->renderItem($this->items[$i], $i);
         }
-        return Html::tag('ul',implode("\n", $items), ['class'=>'slidee']);
+        return Html::tag('ul',implode("\n", $items), ['class'=>'slidee'.$this->orientation]);
     }
 
     /**
@@ -206,7 +206,7 @@ class yii2sly extends Widget
             $scroller = Html::tag('div',' ',array(
                 'class' => 'handle'
             ));
-            return "<div id='".$this->options['id']."scrollbar' class='scrollbar'>".$scroller."</div>\n";
+            return "<div id='".$this->options['id']."scrollbar' class='scrollbar" . $this->orientation . "'>".$scroller."</div>\n";
         } 
         else {
             $nav = "";

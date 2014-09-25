@@ -114,7 +114,8 @@ class yii2sly extends \yii\base\Widget
 
         //add the requierd css classes to the div container element
         Html::addCssClass($this->options,'frame'.$this->orientation);
-        if(!is_null($this->onePerFrame))
+        
+        if(!is_null($this->onePerFrame) && $this->onePerFrame)
         {
             Html::addCssClass($this->options,'oneperframe');
         }        

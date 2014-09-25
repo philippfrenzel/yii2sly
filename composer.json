@@ -1,6 +1,6 @@
 {
 	"name": "philippfrenzel/yii2sly",
-	"description": "JavaScript library for one-directional scrolling with item based navigation support for Yii2",
+	"description": "jquery sly picture slider extension for yii",
 	"keywords": ["yii2", "framework","sly","jquery"],
 	"homepage": "http://www.frenzel.net/",
 	"type": "yii2-extension",
